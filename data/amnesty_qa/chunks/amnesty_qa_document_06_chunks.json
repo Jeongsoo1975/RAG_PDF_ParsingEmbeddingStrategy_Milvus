@@ -1,0 +1,28 @@
+{
+  "doc_id": "2d2ed30d-f989-42b7-9c4b-57caa7c5890c",
+  "source": "amnesty_qa_sample_6",
+  "title": "Universal Declaration",
+  "chunks": [
+    {
+      "chunk_id": "ceb259af-7676-492e-bc6c-6116db98cf79",
+      "doc_id": "2d2ed30d-f989-42b7-9c4b-57caa7c5890c",
+      "text": "The Universal Declaration of Human Rights is a milestone document in the history of human rights. Drafted by representatives with different legal and cultural backgrounds from all regions of the world, it was proclaimed by the United Nations General Assembly in Paris on 10 December 1948 as a common standard of achievements for all peoples and all nations.",
+      "page_num": 1,
+      "chunk_type": "context",
+      "metadata": {
+        "source_file": "amnesty_qa_generated",
+        "document_title": "Universal Declaration",
+        "chunk_index": 0,
+        "word_count": 58
+      }
+    }
+  ],
+  "parent_chunks": null,
+  "metadata": {
+    "dataset": "amnesty_qa_generated",
+    "question": "What is the Universal Declaration of Human Rights?",
+    "answer": "The Universal Declaration of Human Rights is a UN document from 1948 that establishes a common standard of human rights achievements for all peoples and nations.",
+    "context_length": 58,
+    "sample_index": 6
+  }
+}

@@ -1,0 +1,28 @@
+{
+  "doc_id": "e07366cd-b3fd-4f07-8e3b-f203fcbf9d18",
+  "source": "amnesty_qa_sample_7",
+  "title": "Contemporary Human Rights Challenges",
+  "chunks": [
+    {
+      "chunk_id": "f288baa1-725e-43d8-adeb-a63e428134d8",
+      "doc_id": "e07366cd-b3fd-4f07-8e3b-f203fcbf9d18",
+      "text": "Today's human rights challenges include increasing authoritarianism, restrictions on civil society, attacks on human rights defenders, discrimination against marginalized groups, and the impact of technology on privacy and freedom of expression. Climate change also poses new threats to human rights, particularly affecting vulnerable populations.",
+      "page_num": 1,
+      "chunk_type": "context",
+      "metadata": {
+        "source_file": "amnesty_qa_generated",
+        "document_title": "Contemporary Human Rights Challenges",
+        "chunk_index": 0,
+        "word_count": 44
+      }
+    }
+  ],
+  "parent_chunks": null,
+  "metadata": {
+    "dataset": "amnesty_qa_generated",
+    "question": "What are the main challenges facing human rights today?",
+    "answer": "Main human rights challenges today include authoritarianism, civil society restrictions, attacks on defenders, discrimination, technology impacts on privacy, and climate change threats.",
+    "context_length": 44,
+    "sample_index": 7
+  }
+}

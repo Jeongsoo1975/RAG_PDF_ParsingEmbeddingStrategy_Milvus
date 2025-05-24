@@ -1,0 +1,28 @@
+{
+  "doc_id": "f69a8d82-1097-4774-93e7-b83538654674",
+  "source": "amnesty_qa_sample_9",
+  "title": "Human Rights Education",
+  "chunks": [
+    {
+      "chunk_id": "bf42f828-98e2-4585-9552-ede9ac846208",
+      "doc_id": "f69a8d82-1097-4774-93e7-b83538654674",
+      "text": "Human rights education builds awareness, skills, and knowledge to promote respect for human rights. It empowers people to know and claim their rights and to respect the rights of others. Education helps create a culture of human rights where people understand their role in creating a just society.",
+      "page_num": 1,
+      "chunk_type": "context",
+      "metadata": {
+        "source_file": "amnesty_qa_generated",
+        "document_title": "Human Rights Education",
+        "chunk_index": 0,
+        "word_count": 48
+      }
+    }
+  ],
+  "parent_chunks": null,
+  "metadata": {
+    "dataset": "amnesty_qa_generated",
+    "question": "What is the importance of human rights education?",
+    "answer": "Human rights education builds awareness and skills, empowers people to claim their rights and respect others' rights, creating a culture of human rights and justice.",
+    "context_length": 48,
+    "sample_index": 9
+  }
+}

@@ -1,0 +1,147 @@
+{
+  "dataset_info": {
+    "name": "amnesty_qa_evaluation",
+    "total_questions": 10,
+    "creation_date": "2025-05-23 18:29:45"
+  },
+  "questions": [
+    "What are the basic principles of human rights?",
+    "What is the role of international law in protecting human rights?",
+    "How does Amnesty International work to protect human rights?",
+    "What are civil and political rights?",
+    "What are economic, social and cultural rights?",
+    "How can individuals contribute to human rights protection?",
+    "What is the Universal Declaration of Human Rights?",
+    "What are the main challenges facing human rights today?",
+    "How does poverty relate to human rights?",
+    "What is the importance of human rights education?"
+  ],
+  "contexts": [
+    [
+      "Human rights are fundamental freedoms and protections that belong to every person. The basic principles include universality, indivisibility, interdependence, equality and non-discrimination. These rights are inherent to all human beings regardless of nationality, sex, national or ethnic origin, color, religion, language, or any other status."
+    ],
+    [
+      "International human rights law establishes the obligations of governments to act in certain ways or to refrain from certain acts, in order to promote and protect human rights and fundamental freedoms of individuals or groups. International human rights law is primarily made up of treaties and customary international law."
+    ],
+    [
+      "Amnesty International is a global movement that campaigns for a world where human rights are enjoyed by all. We investigate and expose abuses, educate and mobilize the public, and help transform societies to create a safer, more just world. We received the Nobel Peace Prize for our life-saving work."
+    ],
+    [
+      "Civil and political rights are a class of rights that protect individuals' freedom from infringement by governments, social organizations, and private individuals. They ensure one's entitlement to participate in the civil and political life of society and the state without discrimination or repression. These include rights to life, liberty, freedom of expression, and fair trial."
+    ],
+    [
+      "Economic, social and cultural rights include the rights to adequate food, housing, education, health, social security, and to take part in cultural life. These rights are enshrined in the International Covenant on Economic, Social and Cultural Rights. They are essential for human dignity and development."
+    ],
+    [
+      "Every individual can contribute to human rights protection by staying informed about human rights issues, supporting organizations that defend human rights, participating in peaceful demonstrations, writing to government officials, and speaking out against discrimination and injustice in their communities. Education and awareness are powerful tools for change."
+    ],
+    [
+      "The Universal Declaration of Human Rights is a milestone document in the history of human rights. Drafted by representatives with different legal and cultural backgrounds from all regions of the world, it was proclaimed by the United Nations General Assembly in Paris on 10 December 1948 as a common standard of achievements for all peoples and all nations."
+    ],
+    [
+      "Today's human rights challenges include increasing authoritarianism, restrictions on civil society, attacks on human rights defenders, discrimination against marginalized groups, and the impact of technology on privacy and freedom of expression. Climate change also poses new threats to human rights, particularly affecting vulnerable populations."
+    ],
+    [
+      "Poverty is both a cause and consequence of human rights violations. It denies people access to basic necessities like food, shelter, education, and healthcare. The human rights approach to poverty reduction emphasizes empowerment, participation, and accountability, focusing on the most marginalized and excluded groups."
+    ],
+    [
+      "Human rights education builds awareness, skills, and knowledge to promote respect for human rights. It empowers people to know and claim their rights and to respect the rights of others. Education helps create a culture of human rights where people understand their role in creating a just society."
+    ]
+  ],
+  "ground_truths": [
+    [
+      "The basic principles of human rights include universality, indivisibility, interdependence, equality and non-discrimination."
+    ],
+    [
+      "International law establishes government obligations to promote and protect human rights through treaties and customary international law."
+    ],
+    [
+      "Amnesty International investigates abuses, educates the public, and mobilizes communities to transform societies and protect human rights."
+    ],
+    [
+      "Civil and political rights protect individual freedom from government infringement and ensure participation in civil and political life, including rights to life, liberty, expression, and fair trial."
+    ],
+    [
+      "Economic, social and cultural rights include rights to adequate food, housing, education, health, social security, and cultural participation, essential for human dignity."
+    ],
+    [
+      "Individuals can protect human rights by staying informed, supporting rights organizations, participating in peaceful demonstrations, contacting officials, and speaking out against injustice."
+    ],
+    [
+      "The Universal Declaration of Human Rights is a UN document from 1948 that establishes a common standard of human rights achievements for all peoples and nations."
+    ],
+    [
+      "Main human rights challenges today include authoritarianism, civil society restrictions, attacks on defenders, discrimination, technology impacts on privacy, and climate change threats."
+    ],
+    [
+      "Poverty both causes and results from human rights violations, denying access to basic necessities. Human rights approaches emphasize empowerment and focus on marginalized groups."
+    ],
+    [
+      "Human rights education builds awareness and skills, empowers people to claim their rights and respect others' rights, creating a culture of human rights and justice."
+    ]
+  ],
+  "ids": [
+    "amnesty_qa_0",
+    "amnesty_qa_1",
+    "amnesty_qa_2",
+    "amnesty_qa_3",
+    "amnesty_qa_4",
+    "amnesty_qa_5",
+    "amnesty_qa_6",
+    "amnesty_qa_7",
+    "amnesty_qa_8",
+    "amnesty_qa_9"
+  ],
+  "metadata": [
+    {
+      "title": "Human Rights Principles",
+      "source": "amnesty_qa_generated",
+      "index": 0
+    },
+    {
+      "title": "International Human Rights Law",
+      "source": "amnesty_qa_generated",
+      "index": 1
+    },
+    {
+      "title": "Amnesty International Mission",
+      "source": "amnesty_qa_generated",
+      "index": 2
+    },
+    {
+      "title": "Civil and Political Rights",
+      "source": "amnesty_qa_generated",
+      "index": 3
+    },
+    {
+      "title": "Economic Social Cultural Rights",
+      "source": "amnesty_qa_generated",
+      "index": 4
+    },
+    {
+      "title": "Individual Human Rights Action",
+      "source": "amnesty_qa_generated",
+      "index": 5
+    },
+    {
+      "title": "Universal Declaration",
+      "source": "amnesty_qa_generated",
+      "index": 6
+    },
+    {
+      "title": "Contemporary Human Rights Challenges",
+      "source": "amnesty_qa_generated",
+      "index": 7
+    },
+    {
+      "title": "Poverty and Human Rights",
+      "source": "amnesty_qa_generated",
+      "index": 8
+    },
+    {
+      "title": "Human Rights Education",
+      "source": "amnesty_qa_generated",
+      "index": 9
+    }
+  ]
+}

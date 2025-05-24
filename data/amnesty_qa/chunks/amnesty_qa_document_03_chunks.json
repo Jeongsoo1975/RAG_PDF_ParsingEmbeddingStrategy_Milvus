@@ -1,0 +1,28 @@
+{
+  "doc_id": "65a78a4e-3fd3-47c7-a438-1b8e45a4fc5d",
+  "source": "amnesty_qa_sample_3",
+  "title": "Civil and Political Rights",
+  "chunks": [
+    {
+      "chunk_id": "1cd61b14-ab25-4bcc-96ea-1ecfa2b31ac7",
+      "doc_id": "65a78a4e-3fd3-47c7-a438-1b8e45a4fc5d",
+      "text": "Civil and political rights are a class of rights that protect individuals' freedom from infringement by governments, social organizations, and private individuals. They ensure one's entitlement to participate in the civil and political life of society and the state without discrimination or repression. These include rights to life, liberty, freedom of expression, and fair trial.",
+      "page_num": 1,
+      "chunk_type": "context",
+      "metadata": {
+        "source_file": "amnesty_qa_generated",
+        "document_title": "Civil and Political Rights",
+        "chunk_index": 0,
+        "word_count": 55
+      }
+    }
+  ],
+  "parent_chunks": null,
+  "metadata": {
+    "dataset": "amnesty_qa_generated",
+    "question": "What are civil and political rights?",
+    "answer": "Civil and political rights protect individual freedom from government infringement and ensure participation in civil and political life, including rights to life, liberty, expression, and fair trial.",
+    "context_length": 55,
+    "sample_index": 3
+  }
+}

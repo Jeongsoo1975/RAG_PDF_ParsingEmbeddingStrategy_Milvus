@@ -1,0 +1,28 @@
+{
+  "doc_id": "5b9c0b0a-6a94-4fd8-b3de-de01eb1b7ca2",
+  "source": "amnesty_qa_sample_1",
+  "title": "International Human Rights Law",
+  "chunks": [
+    {
+      "chunk_id": "057e3f2e-13a9-4e35-ba49-3faa2abd770c",
+      "doc_id": "5b9c0b0a-6a94-4fd8-b3de-de01eb1b7ca2",
+      "text": "International human rights law establishes the obligations of governments to act in certain ways or to refrain from certain acts, in order to promote and protect human rights and fundamental freedoms of individuals or groups. International human rights law is primarily made up of treaties and customary international law.",
+      "page_num": 1,
+      "chunk_type": "context",
+      "metadata": {
+        "source_file": "amnesty_qa_generated",
+        "document_title": "International Human Rights Law",
+        "chunk_index": 0,
+        "word_count": 49
+      }
+    }
+  ],
+  "parent_chunks": null,
+  "metadata": {
+    "dataset": "amnesty_qa_generated",
+    "question": "What is the role of international law in protecting human rights?",
+    "answer": "International law establishes government obligations to promote and protect human rights through treaties and customary international law.",
+    "context_length": 49,
+    "sample_index": 1
+  }
+}

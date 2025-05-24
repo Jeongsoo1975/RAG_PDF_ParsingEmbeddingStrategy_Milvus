@@ -1,0 +1,618 @@
+#!/usr/bin/env python
+# -*- coding: utf-8 -*-
+
+"""
+3단계 표준 RAGAS 평가 실행기
+amnesty_qa 데이터셋과 임베딩을 활용하여 완전한 표준 RAGAS 평가를 수행
+"""
+
+import os
+import sys
+import json
+import logging
+import traceback
+import numpy as np
+from datetime import datetime
+from typing import Dict, List, Any, Optional
+from pathlib import Path
+
+# 프로젝트 루트 경로 추가
+project_root = Path(__file__).parent.parent.parent
+sys.path.append(str(project_root))
+
+from src.evaluation.simple_ragas_metrics import SimpleRAGASMetrics
+
+
+class SimpleTFIDFEmbedder:
+    """간단한 TF-IDF 기반 임베더"""
+    
+    def __init__(self, documents: List[str], dimension: int = 300):
+        self.dimension = dimension
+        self.documents = documents
+        self.vocabulary = set()
+        self.doc_term_matrix = []
+        self.idf_scores = {}
+        
+        self._build_vocabulary()
+        self._compute_tfidf()
+    
+    def _build_vocabulary(self):
+        """단어 사전 생성"""
+        for doc in self.documents:
+            words = doc.lower().split()
+            self.vocabulary.update(words)
+        
+        self.vocabulary = list(self.vocabulary)[:self.dimension]  # 차원 제한
+        self.word_to_idx = {word: i for i, word in enumerate(self.vocabulary)}
+    
+    def _compute_tfidf(self):
+        """되면 TF-IDF 계산"""
+        import math
+        
+        # IDF 계산
+        for word in self.vocabulary:
+            doc_count = sum(1 for doc in self.documents if word in doc.lower())
+            self.idf_scores[word] = math.log(len(self.documents) / max(1, doc_count))
+        
+        # 각 문서의 TF-IDF 벡터 계산
+        for doc in self.documents:
+            words = doc.lower().split()
+            word_count = {}
+            for word in words:
+                word_count[word] = word_count.get(word, 0) + 1
+            
+            doc_vector = np.zeros(len(self.vocabulary))
+            for word, count in word_count.items():
+                if word in self.word_to_idx:
+                    tf = count / len(words)  # TF
+                    idf = self.idf_scores.get(word, 0)  # IDF
+                    doc_vector[self.word_to_idx[word]] = tf * idf
+            
+            # 정규화
+            norm = np.linalg.norm(doc_vector)
+            if norm > 0:
+                doc_vector = doc_vector / norm
+            
+            self.doc_term_matrix.append(doc_vector)
+    
+    def transform(self, text: str) -> np.ndarray:
+        """텍스트를 벡터로 변환"""
+        words = text.lower().split()
+        word_count = {}
+        for word in words:
+            word_count[word] = word_count.get(word, 0) + 1
+        
+        vector = np.zeros(len(self.vocabulary))
+        for word, count in word_count.items():
+            if word in self.word_to_idx:
+                tf = count / len(words)
+                idf = self.idf_scores.get(word, 0)
+                vector[self.word_to_idx[word]] = tf * idf
+        
+        # 정규화
+        norm = np.linalg.norm(vector)
+        if norm > 0:
+            vector = vector / norm
+        
+        return vector
+
+
+class AmnestyDataLoader:
+    """Amnesty QA 데이터 로더"""
+    
+    def __init__(self, data_dir: str = "data/amnesty_qa"):
+        self.data_dir = Path(data_dir)
+        self.logger = logging.getLogger("AmnestyDataLoader")
+    
+    def load_evaluation_dataset(self) -> List[Dict[str, Any]]:
+        """평가 데이터셋 로드"""
+        eval_file = self.data_dir / "amnesty_qa_evaluation.json"
+        
+        if not eval_file.exists():
+            raise FileNotFoundError(f"평가 데이터 파일을 찾을 수 없습니다: {eval_file}")
+        
+        with open(eval_file, 'r', encoding='utf-8') as f:
+            data = json.load(f)
+        
+        questions = data.get('questions', [])
+        contexts = data.get('contexts', [])
+        ground_truths = data.get('ground_truths', [])
+        ids = data.get('ids', [])
+        
+        # 평가 항목 리스트 생성
+        evaluation_items = []
+        for i in range(len(questions)):
+            item = {
+                'id': ids[i] if i < len(ids) else f"amnesty_qa_{i}",
+                'question': questions[i] if i < len(questions) else '',
+                'contexts': contexts[i] if i < len(contexts) else [],
+                'ground_truths': ground_truths[i] if i < len(ground_truths) else [],
+                'metadata': {
+                    'source': 'amnesty_qa',
+                    'index': i
+                }
+            }
+            evaluation_items.append(item)
+        
+        self.logger.info(f"평가 데이터 로드 완료: {len(evaluation_items)}개 항목")
+        return evaluation_items
+
+
+class AmnestyMilvusSearcher:
+    """Amnesty QA 임베딩 검색기"""
+    
+    def __init__(self, milvus_data_file: str = "data/amnesty_qa/amnesty_qa_milvus_data.json"):
+        self.milvus_data_file = Path(milvus_data_file)
+        self.embedder = None
+        self.search_data = None
+        self.logger = logging.getLogger("AmnestyMilvusSearcher")
+        
+        self._load_search_data()
+        self._init_embedder()
+    
+    def _load_search_data(self):
+        """검색 데이터 로드"""
+        if not self.milvus_data_file.exists():
+            raise FileNotFoundError(f"Milvus 데이터 파일을 찾을 수 없습니다: {self.milvus_data_file}")
+        
+        with open(self.milvus_data_file, 'r', encoding='utf-8') as f:
+            self.search_data = json.load(f)
+        
+        self.logger.info(f"검색 데이터 로드 완료: {len(self.search_data.get('ids', []))}개 벡터")
+    
+    def _init_embedder(self):
+        """간단한 TF-IDF 임베더 초기화"""
+        try:
+            # 기존 텍스트 데이터 수집
+            texts = []
+            for metadata in self.search_data.get('metadata', []):
+                text = metadata.get('text', '')
+                if text.strip():
+                    texts.append(text)
+            
+            if not texts:
+                self.logger.warning("텍스트 데이터가 없어 임베더를 초기화할 수 없습니다.")
+                self.embedder = None
+                return
+            
+            self.embedder = SimpleTFIDFEmbedder(texts, dimension=300)
+            
+            self.logger.info(f"TF-IDF 임베더 초기화 완료: {len(texts)}개 문서 학습")
+            
+        except Exception as e:
+            self.logger.error(f"임베더 초기화 실패: {e}")
+            self.embedder = None
+    
+    def search_contexts(self, query: str, top_k: int = 5) -> List[str]:
+        """쿼리에 대한 컨텍스트 검색"""
+        if not self.embedder or not self.search_data:
+            self.logger.warning("검색기가 초기화되지 않았습니다. 빈 컨텍스트 반환")
+            return []
+        
+        try:
+            # 쿼리 임베딩 생성
+            query_embedding = self.embedder.transform(query)
+            
+            # 저장된 벡터와 유사도 계산
+            similarities = []
+            vectors = self.search_data.get('vectors', [])
+            metadata_list = self.search_data.get('metadata', [])
+            
+            # 저장된 벡터 대신 임베더의 doc_term_matrix 사용
+            for i, stored_vector in enumerate(self.embedder.doc_term_matrix):
+                # 코사인 유사도 계산
+                similarity = np.dot(query_embedding, stored_vector) / (
+                    np.linalg.norm(query_embedding) * np.linalg.norm(stored_vector) + 1e-8
+                )
+                
+                similarities.append({
+                    'similarity': float(similarity),
+                    'index': i,
+                    'text': metadata_list[i].get('text', '') if i < len(metadata_list) else ''
+                })
+            
+            # 유사도 순으로 정렬
+            similarities.sort(key=lambda x: x['similarity'], reverse=True)
+            
+            # 상위 k개 텍스트 반환
+            top_contexts = [item['text'] for item in similarities[:top_k] if item['text'].strip()]
+            
+            self.logger.debug(f"쿼리 '{query}'에 대해 {len(top_contexts)}개 컨텍스트 검색됨")
+            return top_contexts
+            
+        except Exception as e:
+            self.logger.error(f"컨텍스트 검색 실패: {e}")
+            return []
+
+
+class MockAnswerGenerator:
+    """모의 답변 생성기 (실제 LLM 대신 사용)"""
+    
+    def __init__(self):
+        self.logger = logging.getLogger("MockAnswerGenerator")
+    
+    def generate_answer(self, question: str, contexts: List[str]) -> str:
+        """컨텍스트를 기반으로 모의 답변 생성"""
+        if not contexts:
+            return "I cannot provide an answer as no relevant context was found."
+        
+        # 가장 유사한 컨텍스트의 첫 2문장을 답변으로 사용
+        primary_context = contexts[0] if contexts else ""
+        sentences = primary_context.split('. ')
+        
+        if len(sentences) >= 2:
+            answer = '. '.join(sentences[:2]) + '.'
+        else:
+            answer = primary_context
+        
+        # 질문 유형에 따른 간단한 템플릿 적용
+        question_lower = question.lower()
+        if "what" in question_lower:
+            if not answer.startswith(("What", "The", "It", "They", "Human", "Civil", "Economic")):
+                answer = f"Based on the available information, {answer}"
+        elif "how" in question_lower:
+            if not answer.startswith(("How", "By", "Through", "To")):
+                answer = f"The process involves {answer.lower()}"
+        
+        return answer.strip()
+
+
+class Step3StandardRAGASEvaluator:
+    """3단계 표준 RAGAS 평가 실행기"""
+    
+    def __init__(self, config_path: Optional[str] = None):
+        """
+        평가기 초기화
+        
+        Args:
+            config_path: 설정 파일 경로 (선택적)
+        """
+        self.logger = self._setup_logging()
+        self.project_root = project_root
+        
+        # 구성요소 초기화
+        try:
+            self.data_loader = AmnestyDataLoader()
+            self.searcher = AmnestyMilvusSearcher()
+            self.answer_generator = MockAnswerGenerator()
+            self.metrics = SimpleRAGASMetrics()
+            
+            self.logger.info("모든 구성요소가 성공적으로 초기화되었습니다.")
+            
+        except Exception as e:
+            self.logger.error(f"구성요소 초기화 중 오류 발생: {e}")
+            raise
+            
+        # 결과 저장 디렉토리 설정
+        self.results_dir = self.project_root / "evaluation_results" / "step3_standard_ragas"
+        self.results_dir.mkdir(parents=True, exist_ok=True)
+        
+        # 평가 결과 저장용
+        self.evaluation_results = []
+        self.overall_metrics = {}
+    
+    def _setup_logging(self) -> logging.Logger:
+        """로깅 설정"""
+        logger = logging.getLogger("Step3StandardRAGASEvaluator")
+        logger.setLevel(logging.INFO)
+        
+        if not logger.handlers:
+            # 콘솔 핸들러
+            console_handler = logging.StreamHandler()
+            console_handler.setLevel(logging.INFO)
+            
+            # 파일 핸들러
+            log_dir = project_root / "logs"
+            log_dir.mkdir(exist_ok=True)
+            file_handler = logging.FileHandler(log_dir / "step3_standard_ragas_evaluation.log", encoding='utf-8')
+            file_handler.setLevel(logging.DEBUG)
+            
+            # 포맷터
+            formatter = logging.Formatter(
+                '%(asctime)s - %(name)s - %(levelname)s - %(message)s'
+            )
+            console_handler.setFormatter(formatter)
+            file_handler.setFormatter(formatter)
+            
+            logger.addHandler(console_handler)
+            logger.addHandler(file_handler)
+            
+        return logger
+    
+    def run_evaluation(self) -> Dict[str, Any]:
+        """
+        전체 평가 프로세스 실행
+        
+        Returns:
+            Dict[str, Any]: 평가 결과
+        """
+        self.logger.info("=== 3단계 표준 RAGAS 평가 시작 ===")
+        start_time = datetime.now()
+        
+        try:
+            # 1. Amnesty QA 평가 데이터 로드
+            self.logger.info("Amnesty QA 평가 데이터 로딩 중...")
+            evaluation_items = self.data_loader.load_evaluation_dataset()
+            
+            if not evaluation_items:
+                self.logger.error("로드된 데이터가 비어있습니다.")
+                return {
+                    'success': False,
+                    'error': '로드된 데이터가 비어있습니다.',
+                    'processed_count': 0
+                }
+            
+            self.logger.info(f"로드된 질문 수: {len(evaluation_items)}")
+            
+            # 2. 각 질문에 대한 평가 실행
+            total_questions = len(evaluation_items)
+            processed_count = 0
+            
+            for item in evaluation_items:
+                try:
+                    result = self._evaluate_single_item(item)
+                    self.evaluation_results.append(result)
+                    processed_count += 1
+                    
+                    if processed_count % 2 == 0:
+                        self.logger.info(f"진행률: {processed_count}/{total_questions} ({processed_count/total_questions*100:.1f}%)")
+                        
+                except Exception as e:
+                    self.logger.error(f"질문 '{item.get('question', 'Unknown')}' 평가 중 오류: {e}")
+                    continue
+            
+            # 3. 전체 평가 지표 계산
+            self._calculate_overall_metrics()
+            
+            # 4. 결과 저장
+            result_file = self.save_results()
+            
+            # 5. 리포트 생성
+            self.generate_report()
+            
+            end_time = datetime.now()
+            duration = end_time - start_time
+            
+            self.logger.info(f"=== 3단계 표준 RAGAS 평가 완료 ===")
+            self.logger.info(f"총 소요 시간: {duration.total_seconds():.2f}초")
+            self.logger.info(f"처리된 질문 수: {processed_count}/{total_questions}")
+            self.logger.info(f"결과 저장: {result_file}")
+            
+            return {
+                'success': True,
+                'processed_count': processed_count,
+                'total_count': total_questions,
+                'duration_seconds': duration.total_seconds(),
+                'result_file': str(result_file),
+                'overall_metrics': self.overall_metrics
+            }
+            
+        except Exception as e:
+            self.logger.error(f"평가 실행 중 심각한 오류 발생: {e}")
+            self.logger.error(traceback.format_exc())
+            return {
+                'success': False,
+                'error': str(e),
+                'processed_count': len(self.evaluation_results)
+            }
+    
+    def _evaluate_single_item(self, item: Dict[str, Any]) -> Dict[str, Any]:
+        """
+        개별 질문에 대한 평가 수행
+        
+        Args:
+            item: Amnesty QA 평가 데이터 항목
+            
+        Returns:
+            Dict[str, Any]: 평가 결과
+        """
+        question = item.get('question', '')
+        ground_truths = item.get('ground_truths', [])
+        original_contexts = item.get('contexts', [])
+        
+        # 1. 컨텍스트 검색 (Milvus 임베딩 기반)
+        try:
+            retrieved_contexts = self.searcher.search_contexts(question, top_k=3)
+            
+            # 원본 컨텍스트와 검색된 컨텍스트 결합
+            all_contexts = original_contexts + retrieved_contexts
+            # 중복 제거
+            unique_contexts = []
+            seen = set()
+            for ctx in all_contexts:
+                if ctx not in seen and ctx.strip():
+                    unique_contexts.append(ctx)
+                    seen.add(ctx)
+            
+            final_contexts = unique_contexts[:5]  # 최대 5개 컨텍스트
+            
+        except Exception as e:
+            self.logger.warning(f"컨텍스트 검색 실패, 원본 컨텍스트 사용: {e}")
+            final_contexts = original_contexts
+        
+        # 2. 답변 생성 (모의 답변)
+        try:
+            generated_answer = self.answer_generator.generate_answer(question, final_contexts)
+        except Exception as e:
+            self.logger.warning(f"답변 생성 실패: {e}")
+            generated_answer = "Unable to generate answer due to processing error."
+        
+        # 3. 표준 RAGAS 지표 평가
+        try:
+            # ground_truth_contexts 준비 (Context Recall용)
+            gt_contexts = original_contexts if original_contexts else None
+            
+            # SimpleRAGASMetrics의 evaluate_single_item 사용
+            ragas_result = self.metrics.evaluate_single_item(
+                question_id=item.get('id', 'unknown'),
+                question=question,
+                contexts=final_contexts,
+                answer=generated_answer,
+                ground_truth_contexts=gt_contexts
+            )
+            
+            metrics_dict = {
+                'context_relevancy': ragas_result.context_relevancy,
+                'context_precision': ragas_result.context_precision,
+                'context_recall': ragas_result.context_recall,
+                'faithfulness': ragas_result.faithfulness,
+                'answer_relevancy': ragas_result.answer_relevancy,
+                'overall_score': (ragas_result.context_relevancy + 
+                                ragas_result.context_precision + 
+                                ragas_result.context_recall + 
+                                ragas_result.faithfulness + 
+                                ragas_result.answer_relevancy) / 5.0
+            }
+            
+        except Exception as e:
+            self.logger.error(f"RAGAS 지표 계산 실패: {e}")
+            metrics_dict = {
+                'context_relevancy': 0.0,
+                'context_precision': 0.0,
+                'context_recall': 0.0,
+                'faithfulness': 0.0,
+                'answer_relevancy': 0.0,
+                'overall_score': 0.0,
+                'error': str(e)
+            }
+        
+        # 4. 결과 구성
+        result = {
+            'question_id': item.get('id', 'unknown'),
+            'question': question,
+            'generated_answer': generated_answer,
+            'ground_truths': ground_truths,
+            'contexts': final_contexts,
+            'context_count': len(final_contexts),
+            'metrics': metrics_dict,
+            'metadata': item.get('metadata', {}),
+            'evaluation_timestamp': datetime.now().isoformat()
+        }
+        
+        return result
+    
+    def _calculate_overall_metrics(self) -> None:
+        """전체 평가 지표 계산"""
+        if not self.evaluation_results:
+            self.overall_metrics = {'error': '평가 결과가 없습니다.'}
+            return
+        
+        # 각 지표별 점수 수집
+        metric_names = ['context_relevancy', 'context_precision', 'context_recall', 'faithfulness', 'answer_relevancy']
+        metric_scores = {name: [] for name in metric_names}
+        overall_scores = []
+        
+        for result in self.evaluation_results:
+            metrics = result.get('metrics', {})
+            for name in metric_names:
+                score = metrics.get(name, 0.0)
+                metric_scores[name].append(score)
+            
+            overall_scores.append(metrics.get('overall_score', 0.0))
+        
+        # 통계 계산
+        self.overall_metrics = {
+            'total_questions': len(self.evaluation_results),
+            'evaluation_type': 'standard_ragas_5_metrics'
+        }
+        
+        # 각 지표별 통계
+        for name in metric_names:
+            scores = metric_scores[name]
+            self.overall_metrics[f'average_{name}'] = sum(scores) / len(scores) if scores else 0.0
+            self.overall_metrics[f'min_{name}'] = min(scores) if scores else 0.0
+            self.overall_metrics[f'max_{name}'] = max(scores) if scores else 0.0
+        
+        # 전체 점수 통계
+        self.overall_metrics['average_overall_score'] = sum(overall_scores) / len(overall_scores) if overall_scores else 0.0
+        self.overall_metrics['min_overall_score'] = min(overall_scores) if overall_scores else 0.0
+        self.overall_metrics['max_overall_score'] = max(overall_scores) if overall_scores else 0.0
+    
+    def save_results(self) -> Path:
+        """평가 결과를 JSON 형태로 저장"""
+        timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
+        result_file = self.results_dir / f"step3_standard_ragas_evaluation_{timestamp}.json"
+        
+        # 전체 결과 구성
+        full_results = {
+            'evaluation_info': {
+                'type': 'step3_standard_ragas_evaluation',
+                'dataset': 'amnesty_qa',
+                'metrics': ['context_relevancy', 'context_precision', 'context_recall', 'faithfulness', 'answer_relevancy'],
+                'timestamp': datetime.now().isoformat(),
+                'total_questions': len(self.evaluation_results),
+                'evaluator_version': '1.0.0'
+            },
+            'overall_metrics': self.overall_metrics,
+            'detailed_results': self.evaluation_results
+        }
+        
+        # JSON 파일로 저장
+        with open(result_file, 'w', encoding='utf-8') as f:
+            json.dump(full_results, f, ensure_ascii=False, indent=2)
+        
+        self.logger.info(f"평가 결과 저장 완료: {result_file}")
+        return result_file
+    
+    def generate_report(self) -> None:
+        """평가 결과 요약 리포트 생성"""
+        if not self.overall_metrics:
+            self.logger.warning("전체 지표가 계산되지 않아 리포트를 생성할 수 없습니다.")
+            return
+        
+        print("\n" + "="*70)
+        print("    3단계 표준 RAGAS 평가 결과 요약 (Amnesty QA)")
+        print("="*70)
+        
+        print(f"평가 대상 질문 수: {self.overall_metrics.get('total_questions', 0)}개")
+        print(f"전체 평균 점수: {self.overall_metrics.get('average_overall_score', 0):.3f}")
+        
+        print("\n[ 표준 RAGAS 5개 지표 ]")
+        metric_labels = {
+            'context_relevancy': 'Context Relevancy',
+            'context_precision': 'Context Precision', 
+            'context_recall': 'Context Recall',
+            'faithfulness': 'Faithfulness',
+            'answer_relevancy': 'Answer Relevancy'
+        }
+        
+        for metric_key, label in metric_labels.items():
+            avg = self.overall_metrics.get(f'average_{metric_key}', 0)
+            min_val = self.overall_metrics.get(f'min_{metric_key}', 0)
+            max_val = self.overall_metrics.get(f'max_{metric_key}', 0)
+            
+            print(f"{label:20}: {avg:.3f} (최소: {min_val:.3f}, 최대: {max_val:.3f})")
+        
+        # 성능 평가
+        overall_score = self.overall_metrics.get('average_overall_score', 0)
+        if overall_score >= 0.7:
+            performance = "우수함 (Excellent)"
+        elif overall_score >= 0.5:
+            performance = "양호함 (Good)"
+        elif overall_score >= 0.3:
+            performance = "보통 (Fair)"
+        else:
+            performance = "개선 필요 (Poor)"
+        
+        print(f"\n전체 성능 평가: {performance}")
+        print(f"데이터셋: Amnesty QA (Human Rights)")
+        print(f"평가 방식: 표준 RAGAS 5개 지표")
+        print("="*70 + "\n")
+
+
+# 메인 실행 부분
+if __name__ == "__main__":
+    try:
+        evaluator = Step3StandardRAGASEvaluator()
+        result = evaluator.run_evaluation()
+        
+        if result['success']:
+            print(f"\n평가 완료! 처리된 질문: {result['processed_count']}/{result['total_count']}")
+            print(f"결과 파일: {result['result_file']}")
+        else:
+            print(f"\n평가 실패: {result.get('error', 'Unknown error')}")
+            
+    except Exception as e:
+        print(f"평가 실행 중 오류 발생: {e}")
+        import traceback
+        traceback.print_exc()

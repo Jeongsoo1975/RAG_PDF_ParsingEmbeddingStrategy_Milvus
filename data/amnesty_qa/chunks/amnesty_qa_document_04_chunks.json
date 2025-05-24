@@ -1,0 +1,28 @@
+{
+  "doc_id": "ef19e6c1-4b29-4284-be08-b005e14440ff",
+  "source": "amnesty_qa_sample_4",
+  "title": "Economic Social Cultural Rights",
+  "chunks": [
+    {
+      "chunk_id": "e97af484-3b76-491d-ab51-bde25526a919",
+      "doc_id": "ef19e6c1-4b29-4284-be08-b005e14440ff",
+      "text": "Economic, social and cultural rights include the rights to adequate food, housing, education, health, social security, and to take part in cultural life. These rights are enshrined in the International Covenant on Economic, Social and Cultural Rights. They are essential for human dignity and development.",
+      "page_num": 1,
+      "chunk_type": "context",
+      "metadata": {
+        "source_file": "amnesty_qa_generated",
+        "document_title": "Economic Social Cultural Rights",
+        "chunk_index": 0,
+        "word_count": 45
+      }
+    }
+  ],
+  "parent_chunks": null,
+  "metadata": {
+    "dataset": "amnesty_qa_generated",
+    "question": "What are economic, social and cultural rights?",
+    "answer": "Economic, social and cultural rights include rights to adequate food, housing, education, health, social security, and cultural participation, essential for human dignity.",
+    "context_length": 45,
+    "sample_index": 4
+  }
+}

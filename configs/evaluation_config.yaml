@@ -1,0 +1,82 @@
+# RAG 시스템 평가 설정
+
+evaluation:
+  # 실행 설정
+  run_settings:
+    result_dir: "evaluation_results"
+    collection_name: "insurance_ko_sroberta"
+    top_k_values: [5, 10, 15]
+    similarity_thresholds: [0.05, 0.1]
+    dataset_paths: ["src/evaluation/data/insurance_eval_dataset.json"]
+    use_small_to_big_in_eval: true
+    enable_query_optimization_in_eval: true
+    hybrid_search_in_eval: true
+    parent_chunk_data_dir: "data/parsed_output"
+    
+  # 임베딩 모델 설정
+  embedding_models:
+    - name: "jhgan/ko-sroberta-multitask"
+      dimension: 768
+      normalize: true
+    - name: "sentence-transformers/paraphrase-multilingual-mpnet-base-v2"
+      dimension: 768
+      normalize: true
+    - name: "BM-K/KoSimCSE-roberta-multitask"
+      dimension: 768
+      normalize: true
+    - name: "snunlp/KR-SBERT-V40K-klueNLI-augSTS"
+      dimension: 768
+      normalize: true
+
+  # 재순위화 모델 설정
+  reranker_models:
+    - name: "cross-encoder/ms-marco-MiniLM-L-6-v2"
+      dimension: 384
+    - name: "jhgan/ko-sroberta-multitask"
+      dimension: 768
+    - name: "BM-K/KoSimCSE-roberta-multitask"
+      dimension: 768
+    - name: "snunlp/KR-SBERT-V40K-klueNLI-augSTS"
+      dimension: 768
+    - name: "snunlp/KR-SBERT-V40K-klueNLI"
+      dimension: 768
+    - name: "jhgan/ko-sroberta-crossencoder"
+      dimension: 768
+    - name: "klue/roberta-large"
+      dimension: 1024
+      
+  # Milvus 설정
+  similarity_metric: "COSINE"
+  milvus_index_type: "HNSW"
+  milvus_index_params_hnsw:
+    M: 16
+    efConstruction: 256
+  milvus_search_params_hnsw:
+    ef: 64
+  milvus_output_fields:
+    - "id"
+    - "text"
+    - "doc_id"
+    - "source"
+    - "page_num"
+    - "chunk_id"
+    - "parent_chunk_id"
+    - "chunk_type"
+    - "article_title"
+    - "item_marker"
+  
+  # Small-to-Big 설정
+  small_chunk_types:
+    - "item"
+    - "item_sub_chunk"
+    - "csv_row"
+    - "text_block"
+  
+  # 평가 메트릭
+  metrics:
+    - "precision"
+    - "recall"
+    - "f1_score"
+    - "mrr"
+    - "ndcg"
+    - "has_answer_rate"

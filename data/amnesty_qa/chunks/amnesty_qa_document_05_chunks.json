@@ -1,0 +1,28 @@
+{
+  "doc_id": "b5a0573a-db78-4ce5-a8b8-6b980024d705",
+  "source": "amnesty_qa_sample_5",
+  "title": "Individual Human Rights Action",
+  "chunks": [
+    {
+      "chunk_id": "1bfcb18f-79e5-4c7e-9a4d-27b87b5f211a",
+      "doc_id": "b5a0573a-db78-4ce5-a8b8-6b980024d705",
+      "text": "Every individual can contribute to human rights protection by staying informed about human rights issues, supporting organizations that defend human rights, participating in peaceful demonstrations, writing to government officials, and speaking out against discrimination and injustice in their communities. Education and awareness are powerful tools for change.",
+      "page_num": 1,
+      "chunk_type": "context",
+      "metadata": {
+        "source_file": "amnesty_qa_generated",
+        "document_title": "Individual Human Rights Action",
+        "chunk_index": 0,
+        "word_count": 47
+      }
+    }
+  ],
+  "parent_chunks": null,
+  "metadata": {
+    "dataset": "amnesty_qa_generated",
+    "question": "How can individuals contribute to human rights protection?",
+    "answer": "Individuals can protect human rights by staying informed, supporting rights organizations, participating in peaceful demonstrations, contacting officials, and speaking out against injustice.",
+    "context_length": 47,
+    "sample_index": 5
+  }
+}

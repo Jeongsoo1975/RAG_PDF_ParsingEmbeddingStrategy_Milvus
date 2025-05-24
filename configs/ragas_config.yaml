@@ -1,0 +1,92 @@
+# RAGAS 평가 설정 파일
+
+# 평가 모델 설정
+models:
+  # 문맥 관련성 평가 모델 (한국어 모델 사용)
+  context_relevancy:
+    model: "jhgan/ko-sroberta-multitask"
+    device: "cuda"  # GPU 사용, CPU 사용 시 "cpu"로 변경
+    batch_size: 16
+
+  # 충실도 평가 모델 (한국어 모델 사용)
+  faithfulness:
+    model: "jhgan/ko-sroberta-multitask"
+    device: "cuda"
+    batch_size: 16
+
+  # 답변 관련성 평가 모델 (한국어 모델 사용)
+  answer_relevancy:
+    model: "jhgan/ko-sroberta-multitask"
+    device: "cuda"
+    batch_size: 16
+
+  # 컨텍스트 정확도 평가 모델 (한국어 모델 사용)
+  context_precision:
+    model: "jhgan/ko-sroberta-multitask"
+    device: "cuda"
+    batch_size: 16
+
+  # 컨텍스트 재현율 평가 모델 (한국어 모델 사용)
+  context_recall:
+    model: "jhgan/ko-sroberta-multitask"
+    device: "cuda"
+    batch_size: 16
+
+# 평가 지표 설정
+metrics:
+  # 필수 지표 (항상 사용)
+  core:
+    - "context_relevancy"
+    - "faithfulness"
+    - "answer_relevancy"
+  
+  # 추가 지표 (선택적 사용)
+  additional:
+    - "context_precision"
+    - "context_recall"
+
+# 평가 데이터셋 설정
+datasets:
+  # 평가 데이터셋 경로 (상대 경로 또는 절대 경로)
+  path: "evaluation_results/ragas_datasets"
+  
+  # 데이터셋 포맷 (json, jsonl, csv)
+  format: "json"
+  
+  # 데이터셋 변환 설정
+  conversion:
+    # 변환 시 전처리 옵션
+    text_preprocessing: true
+    
+    # 변환 시 임계값
+    threshold: 0.7
+    
+    # 변환 시 최대 문맥 수
+    max_contexts: 5
+
+# 평가 결과 설정
+results:
+  # 결과 저장 경로
+  path: "evaluation_results/ragas_results"
+  
+  # 결과 포맷 (json, csv)
+  format: "json"
+  
+  # 결과 시각화 설정
+  visualization:
+    # 시각화 포맷 (html, png, pdf)
+    format: "html"
+    
+    # 시각화 템플릿
+    template: "default"
+
+# 로깅 설정
+logging:
+  # 로그 레벨 (debug, info, warning, error, critical)
+  level: "info"
+  
+  # 로그 파일 경로
+  file: "logs/ragas_evaluation.log"
+  
+  # 콘솔 출력 여부
+  console: true

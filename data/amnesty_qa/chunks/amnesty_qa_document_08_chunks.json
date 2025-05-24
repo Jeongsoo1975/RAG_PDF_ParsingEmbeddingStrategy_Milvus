@@ -1,0 +1,28 @@
+{
+  "doc_id": "65584133-5568-4235-b810-63f4ee083967",
+  "source": "amnesty_qa_sample_8",
+  "title": "Poverty and Human Rights",
+  "chunks": [
+    {
+      "chunk_id": "e9312042-0bd4-4c5c-8dd4-6760e97f26fe",
+      "doc_id": "65584133-5568-4235-b810-63f4ee083967",
+      "text": "Poverty is both a cause and consequence of human rights violations. It denies people access to basic necessities like food, shelter, education, and healthcare. The human rights approach to poverty reduction emphasizes empowerment, participation, and accountability, focusing on the most marginalized and excluded groups.",
+      "page_num": 1,
+      "chunk_type": "context",
+      "metadata": {
+        "source_file": "amnesty_qa_generated",
+        "document_title": "Poverty and Human Rights",
+        "chunk_index": 0,
+        "word_count": 44
+      }
+    }
+  ],
+  "parent_chunks": null,
+  "metadata": {
+    "dataset": "amnesty_qa_generated",
+    "question": "How does poverty relate to human rights?",
+    "answer": "Poverty both causes and results from human rights violations, denying access to basic necessities. Human rights approaches emphasize empowerment and focus on marginalized groups.",
+    "context_length": 44,
+    "sample_index": 8
+  }
+}

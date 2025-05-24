@@ -1,0 +1,28 @@
+{
+  "doc_id": "85521e81-7efc-4ecf-821f-5a64048e0034",
+  "source": "amnesty_qa_sample_0",
+  "title": "Human Rights Principles",
+  "chunks": [
+    {
+      "chunk_id": "ebdd4ed5-68f0-441a-a85c-48ef377555b5",
+      "doc_id": "85521e81-7efc-4ecf-821f-5a64048e0034",
+      "text": "Human rights are fundamental freedoms and protections that belong to every person. The basic principles include universality, indivisibility, interdependence, equality and non-discrimination. These rights are inherent to all human beings regardless of nationality, sex, national or ethnic origin, color, religion, language, or any other status.",
+      "page_num": 1,
+      "chunk_type": "context",
+      "metadata": {
+        "source_file": "amnesty_qa_generated",
+        "document_title": "Human Rights Principles",
+        "chunk_index": 0,
+        "word_count": 45
+      }
+    }
+  ],
+  "parent_chunks": null,
+  "metadata": {
+    "dataset": "amnesty_qa_generated",
+    "question": "What are the basic principles of human rights?",
+    "answer": "The basic principles of human rights include universality, indivisibility, interdependence, equality and non-discrimination.",
+    "context_length": 45,
+    "sample_index": 0
+  }
+}

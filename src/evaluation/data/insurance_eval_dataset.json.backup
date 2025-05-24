@@ -1,0 +1,140 @@
+{
+  "dataset_info": {
+    "document_title": "Human Rights Knowledge Base (Converted from Amnesty QA)",
+    "total_questions": 10,
+    "creation_date": "2025-05-23",
+    "description": "Converted amnesty_qa dataset for Step2 RAGAS evaluation compatibility"
+  },
+  "questions": [
+    {
+      "id": "Q001",
+      "text": "What are the basic principles of human rights?",
+      "type": "conceptual",
+      "difficulty": "basic",
+      "related_sections": ["fundamental_principles"],
+      "page_numbers": [1],
+      "gold_standard": {
+        "answer": "The basic principles of human rights include universality, indivisibility, interdependence, equality and non-discrimination.",
+        "essential_elements": ["universality", "indivisibility", "interdependence", "equality", "non-discrimination"],
+        "source_quote": "Human rights are fundamental freedoms and protections that belong to every person. The basic principles include universality, indivisibility, interdependence, equality and non-discrimination. These rights are inherent to all human beings regardless of nationality, sex, national or ethnic origin, color, religion, language, or any other status."
+      }
+    },
+    {
+      "id": "Q002", 
+      "text": "What is the role of international law in protecting human rights?",
+      "type": "legal",
+      "difficulty": "intermediate",
+      "related_sections": ["international_law"],
+      "page_numbers": [2],
+      "gold_standard": {
+        "answer": "International law establishes government obligations to promote and protect human rights through treaties and customary international law.",
+        "essential_elements": ["government obligations", "treaties", "customary international law", "promote", "protect"],
+        "source_quote": "International human rights law establishes the obligations of governments to act in certain ways or to refrain from certain acts, in order to promote and protect human rights and fundamental freedoms of individuals or groups. International human rights law is primarily made up of treaties and customary international law."
+      }
+    },
+    {
+      "id": "Q003",
+      "text": "How does Amnesty International work to protect human rights?",
+      "type": "organizational",
+      "difficulty": "basic", 
+      "related_sections": ["amnesty_mission"],
+      "page_numbers": [3],
+      "gold_standard": {
+        "answer": "Amnesty International investigates abuses, educates the public, and mobilizes communities to transform societies and protect human rights.",
+        "essential_elements": ["investigate", "educate", "mobilize", "transform societies", "protect human rights"],
+        "source_quote": "Amnesty International is a global movement that campaigns for a world where human rights are enjoyed by all. We investigate and expose abuses, educate and mobilize the public, and help transform societies to create a safer, more just world. We received the Nobel Peace Prize for our life-saving work."
+      }
+    },
+    {
+      "id": "Q004",
+      "text": "What are civil and political rights?",
+      "type": "classification",
+      "difficulty": "intermediate",
+      "related_sections": ["civil_political_rights"],
+      "page_numbers": [4],
+      "gold_standard": {
+        "answer": "Civil and political rights protect individual freedom from government infringement and ensure participation in civil and political life, including rights to life, liberty, expression, and fair trial.",
+        "essential_elements": ["protect individual freedom", "government infringement", "participation", "life", "liberty", "expression", "fair trial"],
+        "source_quote": "Civil and political rights are a class of rights that protect individuals' freedom from infringement by governments, social organizations, and private individuals. They ensure one's entitlement to participate in the civil and political life of society and the state without discrimination or repression. These include rights to life, liberty, freedom of expression, and fair trial."
+      }
+    },
+    {
+      "id": "Q005",
+      "text": "What are economic, social and cultural rights?",
+      "type": "classification",
+      "difficulty": "intermediate",
+      "related_sections": ["economic_social_cultural_rights"],
+      "page_numbers": [5],
+      "gold_standard": {
+        "answer": "Economic, social and cultural rights include rights to adequate food, housing, education, health, social security, and cultural participation, essential for human dignity.",
+        "essential_elements": ["adequate food", "housing", "education", "health", "social security", "cultural participation", "human dignity"],
+        "source_quote": "Economic, social and cultural rights include the rights to adequate food, housing, education, health, social security, and to take part in cultural life. These rights are enshrined in the International Covenant on Economic, Social and Cultural Rights. They are essential for human dignity and development."
+      }
+    },
+    {
+      "id": "Q006",
+      "text": "How can individuals contribute to human rights protection?",
+      "type": "practical",
+      "difficulty": "basic",
+      "related_sections": ["individual_action"],
+      "page_numbers": [6],
+      "gold_standard": {
+        "answer": "Individuals can protect human rights by staying informed, supporting rights organizations, participating in peaceful demonstrations, contacting officials, and speaking out against injustice.",
+        "essential_elements": ["staying informed", "supporting organizations", "peaceful demonstrations", "contacting officials", "speaking out"],
+        "source_quote": "Every individual can contribute to human rights protection by staying informed about human rights issues, supporting organizations that defend human rights, participating in peaceful demonstrations, writing to government officials, and speaking out against discrimination and injustice in their communities. Education and awareness are powerful tools for change."
+      }
+    },
+    {
+      "id": "Q007",
+      "text": "What is the Universal Declaration of Human Rights?",
+      "type": "historical",
+      "difficulty": "basic",
+      "related_sections": ["universal_declaration"],
+      "page_numbers": [7],
+      "gold_standard": {
+        "answer": "The Universal Declaration of Human Rights is a UN document from 1948 that establishes a common standard of human rights achievements for all peoples and nations.",
+        "essential_elements": ["UN document", "1948", "common standard", "human rights achievements", "all peoples", "all nations"],
+        "source_quote": "The Universal Declaration of Human Rights is a milestone document in the history of human rights. Drafted by representatives with different legal and cultural backgrounds from all regions of the world, it was proclaimed by the United Nations General Assembly in Paris on 10 December 1948 as a common standard of achievements for all peoples and all nations."
+      }
+    },
+    {
+      "id": "Q008",
+      "text": "What are the main challenges facing human rights today?",
+      "type": "contemporary",
+      "difficulty": "advanced",
+      "related_sections": ["current_challenges"],
+      "page_numbers": [8],
+      "gold_standard": {
+        "answer": "Main human rights challenges today include authoritarianism, civil society restrictions, attacks on defenders, discrimination, technology impacts on privacy, and climate change threats.",
+        "essential_elements": ["authoritarianism", "civil society restrictions", "attacks on defenders", "discrimination", "technology impacts", "climate change"],
+        "source_quote": "Today's human rights challenges include increasing authoritarianism, restrictions on civil society, attacks on human rights defenders, discrimination against marginalized groups, and the impact of technology on privacy and freedom of expression. Climate change also poses new threats to human rights, particularly affecting vulnerable populations."
+      }
+    },
+    {
+      "id": "Q009",
+      "text": "How does poverty relate to human rights?",
+      "type": "social",
+      "difficulty": "intermediate",
+      "related_sections": ["poverty_rights"],
+      "page_numbers": [9],
+      "gold_standard": {
+        "answer": "Poverty both causes and results from human rights violations, denying access to basic necessities. Human rights approaches emphasize empowerment and focus on marginalized groups.",
+        "essential_elements": ["causes", "results from", "human rights violations", "basic necessities", "empowerment", "marginalized groups"],
+        "source_quote": "Poverty is both a cause and consequence of human rights violations. It denies people access to basic necessities like food, shelter, education, and healthcare. The human rights approach to poverty reduction emphasizes empowerment, participation, and accountability, focusing on the most marginalized and excluded groups."
+      }
+    },
+    {
+      "id": "Q010",
+      "text": "What is the importance of human rights education?",
+      "type": "educational",
+      "difficulty": "basic",
+      "related_sections": ["education"],
+      "page_numbers": [10],
+      "gold_standard": {
+        "answer": "Human rights education builds awareness and skills, empowers people to claim their rights and respect others' rights, creating a culture of human rights and justice.",
+        "essential_elements": ["builds awareness", "builds skills", "empowers people", "claim rights", "respect others", "culture of human rights"],
+        "source_quote": "Human rights education builds awareness, skills, and knowledge to promote respect for human rights. It empowers people to know and claim their rights and to respect the rights of others. Education helps create a culture of human rights where people understand their role in creating a just society."
+      }
+    }
+  ]
+}

@@ -1,0 +1,28 @@
+{
+  "doc_id": "19d1c823-a54e-46d8-b4d0-97ad4972d9c9",
+  "source": "amnesty_qa_sample_2",
+  "title": "Amnesty International Mission",
+  "chunks": [
+    {
+      "chunk_id": "30865e9d-e2c4-4f53-86b3-3ab063be3a2d",
+      "doc_id": "19d1c823-a54e-46d8-b4d0-97ad4972d9c9",
+      "text": "Amnesty International is a global movement that campaigns for a world where human rights are enjoyed by all. We investigate and expose abuses, educate and mobilize the public, and help transform societies to create a safer, more just world. We received the Nobel Peace Prize for our life-saving work.",
+      "page_num": 1,
+      "chunk_type": "context",
+      "metadata": {
+        "source_file": "amnesty_qa_generated",
+        "document_title": "Amnesty International Mission",
+        "chunk_index": 0,
+        "word_count": 49
+      }
+    }
+  ],
+  "parent_chunks": null,
+  "metadata": {
+    "dataset": "amnesty_qa_generated",
+    "question": "How does Amnesty International work to protect human rights?",
+    "answer": "Amnesty International investigates abuses, educates the public, and mobilizes communities to transform societies and protect human rights.",
+    "context_length": 49,
+    "sample_index": 2
+  }
+}
